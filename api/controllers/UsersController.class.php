@@ -133,4 +133,13 @@ class UsersController extends Controller
         }
         return $this->httpUserResponse(400, 'It appears we don\'t have this email address: '.$_request['email'].' in our records. Please sign up.');
     }
+
+    public function edit($_request)
+    {
+        $user = new Users();
+        $user->setVars($_request);
+        $update = $user->appendArray($user->getVars());
+        $user->update($user->getTableName(), $update, array('user_id' => $_request['user_id']));
+
+    }
 }

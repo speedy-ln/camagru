@@ -65,6 +65,9 @@ class Api extends REST{
             case "forgot_password":
                 $result = $user->forgotPassword($this->_request);
                 break;
+            case "edit":
+                $result = $user->edit($this->_request);
+                break;
         }
         if(isset($result)){
             $this->response($this->json($result), $result['code']);
