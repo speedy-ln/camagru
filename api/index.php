@@ -91,8 +91,27 @@ class Api extends REST{
             $this->response($this->json($error), 501);
         }
     }
+    
+    public function upload_post()
+    {
+        $user = new UploadsControllers();
+        switch($this->_request['upload']){
+            case "new_picture":
+                $result = $user->new_picture($this->_request);
+                break;
+            case "base64":
+                $result = $user->save_base($this->_request);
+                break;
+        }
+        if(isset($result)){
+            $this->response($this->json($result), $result['code']);
+        } else {
+            $error = array("code" => 405, "Bad request, please try again.", "content" => false);
+            $this->response($this->json($error), 501);
+        }
+    }
 
 }
-
+//echo json_encode($_FILES);
 $api = new Api();
 $api->initializeApi();

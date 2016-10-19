@@ -9,7 +9,6 @@
     <link href="style/css/bootstrap.min.css" rel="stylesheet">
     <link href="style/css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="style/css/style.css" rel="stylesheet">
-    <script type="text/javascript" src="style/js/script.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -34,16 +33,93 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <video id="video"></video>
-            <button id="startbutton">Take Photo</button>
-            <canvas id="canvas"></canvas>
-            <img src="http://placekitten.com/g/320/261" id="photo" alt="photo">
+            <h1>Snap a Pic</h1>
+            <div class="col-md-6 col-sm-6">
+                <div class="row"><video id="video"></video></div>
+                <button class="btn btn-default" onclick="document.getElementById('save_photo').style.display='inline-block';" id="startbutton">Take Photo</button>
+                <button class="btn btn-info" style="display: none;" id="save_photo" >Save Photo</button>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <img src="http://placekitten.com/g/320/261" id="photo" alt="photo">
+            </div>
+            <br>
+            <div class="row"><div id="message_container" style="display: none;" class="text-center alert alert-success" role="alert">
+                <span id="message" ></span>
+            </div></div>
+            <br>
+            <canvas style="display: none;" id="canvas"></canvas>
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <form class="form-signin" enctype="multipart/form-data" onsubmit="return false;">
+                    <h2 class="form-signin-heading">Upload Image</h2>
+                    <label for="inputFile" class="sr-only">Image</label>
+                    <input type="file" name="file" id="inputFile" accept="image/jpeg,image/png" class="form-control" required >
+                    <!--<button onclick="upload();" id="upload_btn" class="btn btn-lg btn-primary btn-block" >Upload</button>-->
+                    <div class="text-center">
+                        <img id="pre_loader" class="text-center" style="display: none;" src="style/images/facebook.gif" >
+                    </div>
+                </form>
+            </div>
         </div>
         <div class="col-sm-12 col-md-3">
-
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img-responsive" src="http://localhost/~mashesha/camagru/uploads/5807c7eae663a.png" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img-responsive" src="http://localhost/~mashesha/camagru/uploads/5807c7eae663a.png" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img-responsive" src="http://localhost/~mashesha/camagru/uploads/5807c7eae663a.png" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img-responsive" src="http://localhost/~mashesha/camagru/uploads/5807c7eae663a.png" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img-responsive" src="http://localhost/~mashesha/camagru/uploads/5807c7eae663a.png" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img-responsive" src="http://localhost/~mashesha/camagru/uploads/5807c7eae663a.png" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img-responsive" src="http://localhost/~mashesha/camagru/uploads/5807c7eae663a.png" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img-responsive" src="http://localhost/~mashesha/camagru/uploads/5807c7eae663a.png" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img-responsive" src="http://localhost/~mashesha/camagru/uploads/5807c7eae663a.png" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img-responsive" src="http://localhost/~mashesha/camagru/uploads/5807c7eae663a.png" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img-responsive" src="http://localhost/~mashesha/camagru/uploads/5807c7eae663a.png" alt="">
+                </a>
+            </div>
         </div>
     </div>
 </div>
+<script type="text/javascript" src="style/js/script.js"></script>
 <script type="text/javascript" src="style/js/home.js"></script>
 </body>
 </html>

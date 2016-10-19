@@ -10,6 +10,7 @@
         canvas       = document.querySelector('#canvas'),
         photo        = document.querySelector('#photo'),
         startbutton  = document.querySelector('#startbutton'),
+        savebutton  = document.querySelector('#save_photo'),
         width = 320,
         height = 0;
 
@@ -48,6 +49,19 @@
         }
     }, false);
 
+    function save_webcam_photo()
+    {
+        var data = new FormData();
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+        data.append("action", "upload");
+        data.append("upload", "base64");
+        data.append("user_id", 1);
+        data.append("data", canvas.toDataURL('image/png'));
+        load_post(api_url, data, upload_img_callback);
+    }
+
     function takepicture() {
         canvas.width = width;
         canvas.height = height;
@@ -58,6 +72,11 @@
 
     startbutton.addEventListener('click', function(ev){
         takepicture();
+        ev.preventDefault();
+    }, false);
+
+    savebutton.addEventListener('click', function(ev){
+        save_webcam_photo();
         ev.preventDefault();
     }, false);
 

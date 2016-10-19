@@ -1,8 +1,10 @@
 /**
  * Created by Lebelo Nkadimeng on 2016/10/17.
  */
-// var api_url = "http://localhost/~mashesha/camagru/api/index.php";
-var api_url = "http://localhost:8080/camagru/api/index.php";
+var api_url = "http://localhost/~mashesha/camagru/api/index.php";
+// var api_url = "http://localhost:8080/camagru/api/index.php";
+if (document.getElementById('inputFile'))
+    document.getElementById('inputFile').addEventListener("change",upload_image);
 
 function load_get(url, callback) {
     var xhr;
@@ -33,6 +35,40 @@ function load_get(url, callback) {
     }
     xhr.open('GET', url, true);
     xhr.send('');
+}
+
+function load_post_custom(url, params, callback)
+{
+    var xhr;
+    if(typeof XMLHttpRequest !== 'undefined') xhr = new XMLHttpRequest();
+    else {
+        var versions = ["MSXML2.XmlHttp.5.0",
+            "MSXML2.XmlHttp.4.0",
+            "MSXML2.XmlHttp.3.0",
+            "MSXML2.XmlHttp.2.0",
+            "Microsoft.XmlHttp"];
+
+        for(var i = 0, len = versions.length; i < len; i++) {
+            try {
+                xhr = new ActiveXObject(versions[i]);
+                break;
+            }
+            catch(e){}
+        } // end for
+    }
+    xhr.onreadystatechange = ensureReadiness;
+    function ensureReadiness() {
+        if(xhr.readyState < 4) {
+            return;
+        }
+
+        if (xhr.readyState === 4) {
+            callback(xhr);
+        }
+    }
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(params);
 }
 
 function load_post(url, params, callback){
@@ -150,8 +186,34 @@ function save_photo()
     var canvas = document.getElementsByTagName("canvas");
     canvas.getContext('2d').drawImage(video, 0, 0, 350, 350);
     var data = canvas.toDataURL('image/png');
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", api_url, true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("img=" + data + "&type=" + '0');
+    // var xhttp = new XMLHttpRequest();
+    // xhttp.open("POST", api_url, true);
+    // xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    // xhttp.send("img=" + data + "&type=" + '0');
+}
+
+function upload_image()
+{
+    var data = new FormData();
+    data.append("action", "upload");
+    data.append("upload", "new_picture");
+    data.append("user_id", 1);
+    data.append("file", document.getElementById('inputFile').files[0]);
+    load_post(api_url, data, upload_img_callback);
+}
+
+function upload_img_callback(xhr)
+{
+    console.log(xhr.response);
+    var response = JSON.parse(xhr.responseText);
+    console.log(response);
+    if(xhr.status == 200)
+        document.getElementById("message_container").className = "text-center alert alert-success";
+    else
+        document.getElementById("message_container").className = "text-center alert alert-danger";
+    document.getElementById('message').innerHTML = response.message;
+    document.getElementById('message_container').style.display = "inline-block";
+    setTimeout(function () {
+        document.getElementById('message_container').style.display = "none";
+    },5000);
 }
