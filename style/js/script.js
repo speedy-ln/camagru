@@ -1,8 +1,8 @@
 /**
  * Created by Lebelo Nkadimeng on 2016/10/17.
  */
-var api_url = "http://localhost/~mashesha/camagru/api/index.php";
-// var api_url = "http://localhost:8080/camagru/api/index.php";
+// var api_url = "http://localhost/~mashesha/camagru/api/index.php";
+var api_url = "http://localhost:8080/camagru/api/index.php";
 if (document.getElementById('inputFile'))
     document.getElementById('inputFile').addEventListener("change",upload_image);
 
@@ -216,4 +216,23 @@ function upload_img_callback(xhr)
     setTimeout(function () {
         document.getElementById('message_container').style.display = "none";
     },5000);
+}
+
+
+function add_img(img, frame)
+{
+    var frame1 = document.getElementById('frame1');
+    var frame2 = document.getElementById('frame2');
+    if (frame == 1)
+        frame1.src = img.src;
+    else if (frame == 2)
+        frame2.src = img.src;
+    if (frame1.src != "https://dev.w3.org/2007/mobileok-ref/test/data/ROOT/GraphicsForSpacingTest/1/largeTransparent.gif"
+        && frame2.src != "https://dev.w3.org/2007/mobileok-ref/test/data/ROOT/GraphicsForSpacingTest/1/largeTransparent.gif")
+        document.getElementById('super').disabled = 0;
+}
+
+function super_impose()
+{
+
 }
