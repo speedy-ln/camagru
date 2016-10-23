@@ -28,7 +28,7 @@ class UploadsControllers extends Controller
             $uploaded = move_uploaded_file($_FILES["file"]["tmp_name"], $target_file);
             if ($uploaded === FALSE)
                 return $this->httpUserResponse(417, "Failed to upload file. Please try again later.");
-            $target_file = "http://localhost:8080/camagru/uploads/" . $file_name;
+            $target_file = "http://localhost/~mashesha/camagru/uploads/" . $file_name;
             $uploads = new Uploads();
             $uploads->setVars($_request);
             $uploads->setFileName($target_file);
@@ -60,7 +60,7 @@ class UploadsControllers extends Controller
         $bytes = file_put_contents($target_file, $data);
         if ($bytes !== false) {
             $uploads = new Uploads();
-            $target_file = "http://localhost:8080/camagru/uploads/" . $file_name;
+            $target_file = "http://localhost/~mashesha/camagru/uploads/" . $file_name;
             $uploads->setVars($param);
             $uploads->setFileName($target_file);
             $uploads->setVisible(0);
@@ -76,30 +76,59 @@ class UploadsControllers extends Controller
     private function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct)
     {
         $cut = imagecreatetruecolor($src_w, $src_h);
-        imagecopy($cut, $dst_im, 0, 0, $dst_x, $dst_y, $src_w, $src_h);
-        imagecopy($cut, $src_im, 0, 0, $src_x, $src_y, $src_w, $src_h);
-        imagecopymerge($dst_im, $cut, $dst_x, $dst_y, 0, 0, $src_w, $src_h, $pct);
+        if ($cut !== false)
+            if(imagecopy($cut, $dst_im, 0, 0, $dst_x, $dst_y, $src_w, $src_h))
+                if (imagecopy($cut, $src_im, 0, 0, $src_x, $src_y, $src_w, $src_h))
+                    if (imagecopymerge($dst_im, $cut, $dst_x, $dst_y, 0, 0, $src_w, $src_h, $pct))
+                        return true;
+        return false;
     }
 
-    public function merge()
+    public function merge($data)
     {
-        if (exif_imagetype($_SESSION['img1']) == IMAGETYPE_JPEG)
-            $img1 = imagecreatefromjpeg($_SESSION['img1']);
-        else if (exif_imagetype($_SESSION['img1']) == IMAGETYPE_PNG)
-            $img1 = imagecreatefrompng($_SESSION['img1']);
-        if (exif_imagetype($_SESSION['img2']) == IMAGETYPE_PNG)
-            $img2 = imagecreatefrompng($_SESSION['img2']);
-        else if (exif_imagetype($_SESSION['img2']) == IMAGETYPE_JPEG)
-            $img2 = imagecreatefromjpeg($_SESSION['img2']);
+        if (!isset($data['user_id']))
+            return $this->httpUserResponse(400, "Please login before merging images.");
+        if (!isset($data['img1']) || !isset($data['img2']))
+            return $this->httpUserResponse(400, "Please login before uploading an image.");
+        if (exif_imagetype($data['img1']) == IMAGETYPE_JPEG)
+            $img1 = imagecreatefromjpeg($data['img1']);
+        else if (exif_imagetype($data['img1']) == IMAGETYPE_PNG)
+            $img1 = imagecreatefrompng($data['img1']);
+        if (exif_imagetype($data['img2']) == IMAGETYPE_PNG)
+            $img2 = imagecreatefrompng($data['img2']);
+        else if (exif_imagetype($data['img2']) == IMAGETYPE_JPEG)
+            $img2 = imagecreatefromjpeg($data['img2']);
         if (isset($img1) && isset($img2)) {
-            $img2 = imagescale($img2, 100, 100);
-            $this->imagecopymerge_alpha($img1, $img2, 10, 10, 0, 0, 100, 100, 100);
-            $name = uniqid() . ".png";
-            imagepng($img1, $name);
+            $img1 = imagescale($img1, 400, 400);
+            $img2 = imagescale($img2, 400, 400);
+            if ($img1 === false || $img2 === false)
+                return $this->httpUserResponse(400, "Unable to scale images. Please try again later.");
+            $merge = $this->imagecopymerge_alpha($img1, $img2, 0, 0, 0, 0, 400, 400, 100);
+            if (!$merge)
+            {
+                imagedestroy($img1);
+                imagedestroy($img2);
+                return $this->httpUserResponse(400, "Unable to merge images. Please try again later.");
+            }
+            $n = uniqid() . ".png";
+            $name = "../uploads/".$n;
+            $success = imagepng($img1, $name);
             imagedestroy($img1);
             imagedestroy($img2);
-            $final = 'data:image/png;base64,' . base64_encode(file_get_contents($name));
-            unlink($name);
+            if ($success)
+            {
+                $uploads = new Uploads();
+                $target_file = "http://localhost/~mashesha/camagru/uploads/" . $n;
+                $uploads->setVars($data);
+                $uploads->setFileName($target_file);
+                $insert = $uploads->appendArray($uploads->getVars());
+                $response = $uploads->insert($uploads->getTableName(), $insert);
+                if ($response === false)
+                    return $this->httpUserResponse(400, "Failed to save photo. Please try again later.", $insert, $uploads->dbh);
+                return $this->httpUserResponse(200, "Image saved successfully.", $insert);
+            }
+            return $this->httpUserResponse(400, "Unable to save the merged images. Please try again later.");
         }
+        return $this->httpUserResponse(422, "One or both of the supplied images is not an image. Please try again.");
     }
 }

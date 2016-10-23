@@ -76,7 +76,7 @@ class Uploads extends Model
      */
     public function setVisible($visible)
     {
-        $this->visible = $visible;
+        $this->visible = (int)$visible;
     }
 
     /**

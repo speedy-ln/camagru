@@ -57,7 +57,7 @@
         canvas.getContext('2d').drawImage(video, 0, 0, width, height);
         data.append("action", "upload");
         data.append("upload", "base64");
-        data.append("user_id", 1);
+        data.append("user_id", document.getElementById('uid').innerHTML);
         data.append("data", canvas.toDataURL('image/png'));
         load_post(api_url, data, upload_img_callback);
     }

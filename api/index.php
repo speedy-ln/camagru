@@ -1,4 +1,5 @@
 <?php
+session_start();
 header('Access-Control-Allow-Origin: *');
 foreach (glob("libraries/*.php") as $filename){
     require_once $filename;
@@ -65,8 +66,8 @@ class Api extends REST{
             case "forgot_password":
                 $result = $user->forgotPassword($this->_request);
                 break;
-            case "edit":
-                $result = $user->edit($this->_request);
+            case "confirm_email":
+                $result = $user->confirm_email($this->_request);
                 break;
         }
         if(isset($result)){
@@ -91,6 +92,51 @@ class Api extends REST{
             $this->response($this->json($error), 501);
         }
     }
+
+    public function general_get(){
+        $user = new GeneralController();
+        switch($this->_request['general']){
+            case "imposable":
+                $result = $user->getImposable();
+                break;
+            case "images":
+                $result = $user->getUserImages($this->_request);
+                break;
+            case "all_img":
+                $result = $user->getAllImages();
+                break;
+            case "comments":
+                $result = $user->getComments($this->_request);
+                break;
+        }
+        if(isset($result)){
+            $this->response($this->json($result), $result['code']);
+        } else {
+            $error = array("code" => 405, "Bad request, please try again.", "content" => false);
+            $this->response($this->json($error), 501);
+        }
+    }
+
+    public function general_post(){
+        $user = new GeneralController();
+        switch($this->_request['general']){
+            case "like":
+                $result = $user->like($this->_request);
+                break;
+            case "comment":
+                $result = $user->comment($this->_request);
+                break;
+            case "delete_img":
+                $result = $user->delete_img($this->_request);
+                break;
+        }
+        if(isset($result)){
+            $this->response($this->json($result), $result['code']);
+        } else {
+            $error = array("code" => 405, "Bad request, please try again.", "content" => false);
+            $this->response($this->json($error), 501);
+        }
+    }
     
     public function upload_post()
     {
@@ -101,6 +147,9 @@ class Api extends REST{
                 break;
             case "base64":
                 $result = $user->save_base($this->_request);
+                break;
+            case "merge":
+                $result = $user->merge($this->_request);
                 break;
         }
         if(isset($result)){

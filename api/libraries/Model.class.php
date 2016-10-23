@@ -133,7 +133,7 @@ class Model extends Database{
 
     public function delete($table, $delete){
         $this->dbh->dbDelete($table, $delete);
-        if($this->rows_affected > 0){
+        if($this->dbh->rows_affected > 0){
             return TRUE;
         } else {
             return FALSE;

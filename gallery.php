@@ -1,3 +1,17 @@
+<?php
+session_start();
+if (!isset($_SESSION['user']))
+{
+    header("Location: home.php");
+    exit;
+}
+require_once 'config/CurlClient.class.php';
+$curl = new CurlClient(API_URL."?action=general&general=images&user_id=".$_SESSION['user']->user_id);
+$curl->post = 0;
+$response = json_decode($curl->executePost());
+if($curl->getHttpCode() == 200)
+    $user_images = $response->content;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,11 +35,20 @@
         <!-- Collect the nav links, "forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="login.html">Login<span class="sr-only">(current)</span></a></li>
-                <li><a href="register.html">Register</a></li>
+                <?php if (!isset($_SESSION['user'])){?>
+                <li><a href="login.php">Login<span class="sr-only">(current)</span></a></li>
+                <li><a href="register.php">Register</a></li>
+                <?php } ?>
+                <?php if (isset($_SESSION['user'])){?>
+                    <li><a href="home.php">Home</a></li>
+                    <li class="active"><a href="#">Snap</a></li>
+                    <li><a href="super.php">Make a Pic</a></li>
+                <?php } ?>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Logout</a></li>
+                <?php if (isset($_SESSION['user'])){?>
+                <li><a href="controllers/logout.php">Logout</a></li>
+                <?php } ?>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -136,64 +159,27 @@
 
         <div class="col-sm-12 col-md-3">
             <h2>Pics You've Taken</h2>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+            <?php if (isset($user_images))
+            {
+            foreach ($user_images as $key => $value)
+            {?>
+            <div class="col-lg-4 col-md-4 col-xs-6 thumb">
                 <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://localhost:8080/camagru/uploads/5807c7eae663a.png" alt="">
+                    <img class="img-responsive" src="<?=$value->file_name;?>" alt="img">
                 </a>
+                <div style="display: inline-flex;" class="text-center"><a href="#" onclick="del_img(<?=$value->upload_id;?>)">delete</a></div>
             </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://localhost:8080/camagru/uploads/5807c7eae663a.png" alt="">
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://localhost:8080/camagru/uploads/5807c7eae663a.png" alt="">
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://localhost:8080/camagru/uploads/5807c7eae663a.png" alt="">
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://localhost:8080/camagru/uploads/5807c7eae663a.png" alt="">
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://localhost:8080/camagru/uploads/5807c7eae663a.png" alt="">
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://localhost:8080/camagru/uploads/5807c7eae663a.png" alt="">
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://localhost:8080/camagru/uploads/5807c7eae663a.png" alt="">
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://localhost:8080/camagru/uploads/5807c7eae663a.png" alt="">
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://localhost:8080/camagru/uploads/5807c7eae663a.png" alt="">
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://localhost:8080/camagru/uploads/5807c7eae663a.png" alt="">
-                </a>
-            </div>
+            <?php }
+            }
+            ?>
         </div>
     </div>
-</div>
+</div><?php if(isset($_SESSION['user'])){ ?><div id="uid" style="display: none;"><?=$_SESSION['user']->user_id;?></div> <?php } ?>
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted">Copyright lnkadime &copy 2016. </p>
+    </div>
+</footer>
 <script type="text/javascript" src="style/js/script.js"></script>
 <script type="text/javascript" src="style/js/home.js"></script>
 </body>

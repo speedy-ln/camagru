@@ -33,11 +33,19 @@ class UsersController extends Controller
             return $this->httpUserResponse(400, 'This email address has already been registered. Please login.');
         $user = new Users();
         $user->setVars($_request);
+        $user->setActive(0);
+        $user->setConfirmEmail(uniqid());
         $insert = $user->appendArray($user->getVars());
         $registered = $user->insert($user->getTableName(), $insert);
         if ($registered === FALSE)
             return $this->httpUserResponse(422, "Unable to complete registration.", false, $user->dbh);
-        return $this->httpUserResponse(200, "Registration successful.", false);
+        $headers = "From: lnnkadimeng@gmail.com \r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        $msg = "Hello ".$_request['first_name']." \n\n Please click on the this link to activate your account <a href='http://localhost/~mashesha/camagru/confirm.php?c=".$insert['confirm_email']."'>http://localhost/~mashesha/camagru/confirm.php?c=".$insert['confirm_email'] ."</a>. If you didn't sign up, please ignore this email. \n\n Regards \nCamagru";
+        if(mail($_request['email'], "Confirm Email", $msg, $headers))
+            return $this->httpUserResponse(200, "Registration successful. Please check your email address to activate your account.", false);
+        return $this->httpUserResponse(200, "Registration successful but we were unable to send you an email, please contact support.", false);
     }
 
     private function userExists($email){
@@ -65,6 +73,9 @@ class UsersController extends Controller
             if(password_verify($_request['password'], $select_result[0]['password'])){
                 if(isset($select_result[0]['password'])) unset($select_result[0]['password']);
                 if (isset($select_result[0]['reset_p'])) unset($select_result[0]['reset_p']);
+                if (isset($select_result[0]['confirm_email'])) unset($select_result[0]['confirm_email']);
+                if ($select_result[0]['active'] == 0)
+                    return $this->httpUserResponse(400, "Your account is not yet active. Please check your email.", $select_result);
                 return $this->httpUserResponse(200, "Welcome back.", $select_result);
             }
             return $this->httpUserResponse(422, "Email and password combination incorrect.", false, $users->dbh);
@@ -77,11 +88,8 @@ class UsersController extends Controller
         if(!isset($_request['reset_p'])){
             return $this->httpUserResponse(401, 'Invalid token.');
         }
-        if(!isset($_request['password']) || !isset($_request['confirm_password'])){
+        if(!isset($_request['password'])){
             return $this->httpUserResponse(400, 'Please specify a new password.');
-        }
-        if($_request['password'] != $_request['confirm_password']){
-            return $this->httpUserResponse(422, 'Passwords don\'t match.');
         }
         $users = new Users();
         $condition = array("reset_p" => $_request['reset_p']);
@@ -123,7 +131,7 @@ class UsersController extends Controller
                 $headers = "From: lnnkadimeng@gmail.com \r\n";
                 $headers .= "MIME-Version: 1.0\r\n";
                 $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-                $msg = "Hello ".$user_details[0]['first_name']." \n\n Please click on the this link to reset your password <a href='http://localhost:8080/camagru/reset.php?rp=".$user_details[0]['reset_p']."'>http://localhost:8080/camagru/reset.php?rp=".$user_details[0]['reset_p'] ."</a>. If you didn't forget your password, please ignore this email. \n\n Regards \nCamagru";
+                $msg = "Hello ".$user_details[0]['first_name']." \n\n Please click on the this link to reset your password <a href='http://localhost/~mashesha/camagru/reset.php?rp=".$user_details[0]['reset_p']."'>http://localhost/~mashesha/camagru/reset.php?rp=".$user_details[0]['reset_p'] ."</a>. If you didn't forget your password, please ignore this email. \n\n Regards \nCamagru";
                 if(mail($_request['email'], "Password Reset", $msg, $headers))
                     return $this->httpUserResponse(200, 'An email has been sent to '.$_request['email'].'. Please check your email to reset your password.');
                 else
@@ -136,10 +144,31 @@ class UsersController extends Controller
 
     public function edit($_request)
     {
+        
         $user = new Users();
         $user->setVars($_request);
         $update = $user->appendArray($user->getVars());
         $user->update($user->getTableName(), $update, array('user_id' => $_request['user_id']));
 
+    }
+
+    public function confirm_email($_request)
+    {
+        if(!isset($_request['confirm_email'])){
+            return $this->httpUserResponse(400, 'Invalid request. Please try again.');
+        }
+        $users = new Users();
+        $select = $users->select($users->getTableName(), array(), array('confirm_email' => $_request['confirm_email']));
+        if (is_array($select) && count($select) > 0)
+        {
+            if(isset($select[0]['password'])) unset($select[0]['password']);
+            if (isset($select[0]['reset_p'])) unset($select[0]['reset_p']);
+            if (isset($select[0]['confirm_email'])) unset($select[0]['confirm_email']);
+            $update = $users->update($users->getTableName(), array('active' => 1), array('user_id' => $select[0]['user_id']));
+            if ($update)
+                return $this->httpUserResponse(200, "Your account is now active.");
+            return $this->httpUserResponse(400, "Unable to activate your account at this time, please try again.", false, $users->dbh);
+        }
+        return $this->httpUserResponse(400, "Invalid token supplied Please try again.");
     }
 }

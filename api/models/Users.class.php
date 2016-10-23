@@ -14,6 +14,8 @@ class Users extends Model
     private $email;
     private $pass;
     private $reset_p;
+    private $confirm_email;
+    private $active;
     private $table_name = "users";
 
     /**
@@ -113,6 +115,38 @@ class Users extends Model
     }
 
     /**
+     * @return mixed
+     */
+    public function getConfirmEmail()
+    {
+        return $this->confirm_email;
+    }
+
+    /**
+     * @param mixed $confirm_email
+     */
+    public function setConfirmEmail($confirm_email)
+    {
+        $this->confirm_email = $confirm_email;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param mixed $active
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+    }
+
+    /**
      * @return string
      */
     public function getTableName()
@@ -127,6 +161,8 @@ class Users extends Model
         if (isset($data['last_name'])) $this->setSurname($data['last_name']);
         if (isset($data['email'])) $this->setEmail($data['email']);
         if (isset($data['password'])) $this->setPassword($data['password']);
+        if (isset($data['confirm_email'])) $this->setConfirmEmail($data['confirm_email']);
+        if (isset($data['active'])) $this->setActive($data['active']);
     }
 
     public function getVars()
@@ -138,6 +174,8 @@ class Users extends Model
         $return['email'] = $this->getEmail();
         $return['password'] = $this->getPassword();
         $return['reset_p'] = $this->getResetP();
+        $return['active'] = $this->getActive();
+        $return['confirm_email'] = $this->getConfirmEmail();
         return $return;
     }
     

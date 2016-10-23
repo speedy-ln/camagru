@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (isset($_SESSION['user']))
+{
+    header("Location: home.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,14 +25,14 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="index.html">Camagru</a>
+                <a class="navbar-brand" href="index.php">Camagru</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#">Login<span class="sr-only">(current)</span></a></li>
-                    <li><a href="register.html">Register</a></li>
+                    <li><a href="register.php">Register</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">Logout</a></li>
@@ -44,6 +52,8 @@
                     <img id="pre_loader" class="text-center" style="display: none;" src="style/images/facebook.gif" >
                 </div>
             </form>
+        <div class="text-center"><a href="forgot.php">Forgot Password</a></div>
+        <br>
         <div class="text-center" >
             <div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3">
                 <div id="message_container" style="display: none;" class="text-center alert alert-success" role="alert">
@@ -53,5 +63,10 @@
         </div>
     </div>
 </div>
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted">Copyright lnkadime &copy 2016. </p>
+    </div>
+</footer>
 </body>
 </html>

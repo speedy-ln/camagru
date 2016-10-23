@@ -1,7 +1,8 @@
 body {
     padding-top: 1%;
     padding-bottom: 1%;
-    background-color: #eee;
+    background-color: #594A3F;
+
 }
 
 .form-signin {
@@ -41,4 +42,8 @@ body {
 
 .thumb img {
     max-height: 70px;
+}
+
+.footer {
+    background-color: #999999;
 }

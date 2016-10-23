@@ -122,6 +122,8 @@
 					$this->_request = $this->cleanInputs($_POST, $strip);
 					break;
 				case "GET":
+					$this->_request = $this->cleanInputs($_GET);
+					break;
 				case "PUT":
 					parse_str(file_get_contents("php://input"),$this->_request);
 					$this->_request = $this->cleanInputs($this->_request);
