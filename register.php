@@ -51,7 +51,7 @@ if (isset($_SESSION['user']))
             <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
             <label for="inputPassword" class="sr-only">Password</label>
             <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-            <button onclick="register();" id="register_btn" class="btn btn-lg btn-primary btn-block" >Sign in</button>
+            <button onclick="register();" id="register_btn" class="btn btn-lg btn-primary btn-block" >Register</button>
             <div class="text-center">
                 <img id="pre_loader" class="text-center" style="display: none;" src="style/images/facebook.gif" >
             </div>

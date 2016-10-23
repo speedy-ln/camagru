@@ -28,7 +28,7 @@ class UploadsControllers extends Controller
             $uploaded = move_uploaded_file($_FILES["file"]["tmp_name"], $target_file);
             if ($uploaded === FALSE)
                 return $this->httpUserResponse(417, "Failed to upload file. Please try again later.");
-            $target_file = "http://localhost/~mashesha/camagru/uploads/" . $file_name;
+            $target_file = "http://localhost:8080/camagru/uploads/" . $file_name;
             $uploads = new Uploads();
             $uploads->setVars($_request);
             $uploads->setFileName($target_file);
@@ -60,7 +60,7 @@ class UploadsControllers extends Controller
         $bytes = file_put_contents($target_file, $data);
         if ($bytes !== false) {
             $uploads = new Uploads();
-            $target_file = "http://localhost/~mashesha/camagru/uploads/" . $file_name;
+            $target_file = "http://localhost:8080/camagru/uploads/" . $file_name;
             $uploads->setVars($param);
             $uploads->setFileName($target_file);
             $uploads->setVisible(0);
@@ -118,7 +118,7 @@ class UploadsControllers extends Controller
             if ($success)
             {
                 $uploads = new Uploads();
-                $target_file = "http://localhost/~mashesha/camagru/uploads/" . $n;
+                $target_file = "http://localhost:8080/camagru/uploads/" . $n;
                 $uploads->setVars($data);
                 $uploads->setFileName($target_file);
                 $insert = $uploads->appendArray($uploads->getVars());

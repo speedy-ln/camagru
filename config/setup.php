@@ -7,14 +7,16 @@
  */
 require_once 'database.php';
 $DB_DSN = "mysql:host=127.0.0.1;dbname=mysql";
-$conn = new PDO($DB_DSN, $DB_USER, $DB_PASS);
-$DB_DSN = "mysql:host=127.0.0.1;dbname=$DB_NAME";
-$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$sql = "CREATE DATABASE $DB_NAME";
-$conn->exec($sql);
-$sql = "USE $DB_NAME";
-$conn->exec($sql);
-$sql = 'SET NAMES utf8;
+try {
+    $conn = new PDO($DB_DSN, $DB_USER, $DB_PASS);
+    $DB_DSN = "mysql:host=127.0.0.1;dbname=$DB_NAME";
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $sql = "DROP DATABASE IF EXISTS $DB_NAME;
+    CREATE DATABASE $DB_NAME;";
+    $conn->exec($sql);
+    $sql = "USE $DB_NAME";
+    $conn->exec($sql);
+    $sql = 'SET NAMES utf8;
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `comments`;
 CREATE TABLE `comments` (
@@ -79,6 +81,25 @@ CREATE TABLE `users` (
   UNIQUE KEY `confirm_email` (`confirm_email`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Autumn-Leaves-2.png\');
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Beard-12.png\');
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Woman-Lips-24.png\');
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Beard-14.png\');
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Beard-17.png\');
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Cigarette-13.png\');
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Dragon-13.png\');
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Dragon-14.png\');
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Eye-2.png\');
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Glasses-52.png\');
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Woman-Lips-16.png\');
+insert into img_lib (file_name) VALUES (\'http://localhost:8080/camagru/style/images/Woman-Lips-21.png\');
+
 SET FOREIGN_KEY_CHECKS = 1;';
-$conn->exec($sql);
+    $conn->exec($sql);
+}
+catch (Exception $e)
+{
+    $conn = null;
+    var_dump($e);
+}
 $conn = null;

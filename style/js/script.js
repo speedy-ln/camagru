@@ -1,7 +1,7 @@
 /**
  * Created by Lebelo Nkadimeng on 2016/10/17.
  */
-var api_url = "http://localhost/~mashesha/camagru/api/index.php";
+var api_url = "http://localhost:8080/camagru/api/index.php";
 // var api_url = "http://localhost:8080/camagru/api/index.php";
 if (document.getElementById('inputFile'))
     document.getElementById('inputFile').addEventListener("change",upload_image);
@@ -133,7 +133,7 @@ function login_callback(xhr)
     var response = JSON.parse(xhr.responseText);
     if(xhr.status == 200){
         document.getElementById("message_container").className = "text-center alert alert-success";
-        window.location.replace("http://localhost/~mashesha/camagru/controllers/login.php?json="+xhr.responseText);
+        window.location.replace("http://localhost:8080/camagru/controllers/login.php?json="+xhr.responseText);
     }
     else
     {

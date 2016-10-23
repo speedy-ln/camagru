@@ -42,7 +42,7 @@ class UsersController extends Controller
         $headers = "From: lnnkadimeng@gmail.com \r\n";
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-        $msg = "Hello ".$_request['first_name']." \n\n Please click on the this link to activate your account <a href='http://localhost/~mashesha/camagru/confirm.php?c=".$insert['confirm_email']."'>http://localhost/~mashesha/camagru/confirm.php?c=".$insert['confirm_email'] ."</a>. If you didn't sign up, please ignore this email. \n\n Regards \nCamagru";
+        $msg = "Hello ".$_request['first_name']." \n\n Please click on the this link to activate your account <a href='http://localhost:8080/camagru/confirm.php?c=".$insert['confirm_email']."'>http://localhost:8080/camagru/confirm.php?c=".$insert['confirm_email'] ."</a>. Alternatively, enter this token in the form: ".$insert['confirm_email']." If you didn't sign up, please ignore this email. \n\n Regards \nCamagru";
         if(mail($_request['email'], "Confirm Email", $msg, $headers))
             return $this->httpUserResponse(200, "Registration successful. Please check your email address to activate your account.", false);
         return $this->httpUserResponse(200, "Registration successful but we were unable to send you an email, please contact support.", false);
@@ -131,7 +131,7 @@ class UsersController extends Controller
                 $headers = "From: lnnkadimeng@gmail.com \r\n";
                 $headers .= "MIME-Version: 1.0\r\n";
                 $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-                $msg = "Hello ".$user_details[0]['first_name']." \n\n Please click on the this link to reset your password <a href='http://localhost/~mashesha/camagru/reset.php?rp=".$user_details[0]['reset_p']."'>http://localhost/~mashesha/camagru/reset.php?rp=".$user_details[0]['reset_p'] ."</a>. If you didn't forget your password, please ignore this email. \n\n Regards \nCamagru";
+                $msg = "Hello ".$user_details[0]['first_name']." \n\n Please click on the this link to reset your password <a href='http://localhost:8080/camagru/reset.php?rp=".$guid."'>http://localhost:8080/camagru/reset.php?rp=".$guid ."</a>. If you didn't forget your password, please ignore this email. \n\n Regards \nCamagru";
                 if(mail($_request['email'], "Password Reset", $msg, $headers))
                     return $this->httpUserResponse(200, 'An email has been sent to '.$_request['email'].'. Please check your email to reset your password.');
                 else
